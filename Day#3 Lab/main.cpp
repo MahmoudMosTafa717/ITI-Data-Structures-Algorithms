@@ -80,11 +80,11 @@ class BST
     }
 
     // ========== Height Helper ==========
-    int height(Node *node)
+    int getHeight(Node *node)
     {
         if (!node)
             return 0;
-        return max(height(node->left), height(node->right)) + 1;
+        return max(getHeight(node->left), getHeight(node->right)) + 1;
     }
 
     // ========== Check if Tree Balanced ==========
@@ -93,8 +93,8 @@ class BST
         if (!node)
             return true;
 
-        int lh = height(node->left);
-        int rh = height(node->right);
+        int lh = getHeight(node->left);
+        int rh = getHeight(node->right);
 
         if (abs(lh - rh) > 1)
             return false;
@@ -102,7 +102,7 @@ class BST
         return checkBalance(node->left) && checkBalance(node->right);
     }
 
-    // ========== Store Nodes Inorder ==========
+    // ========== Store Nodes in order ==========
     void storeInOrder(Node *node, vector<Employee> &arr)
     {
         if (!node)
@@ -119,6 +119,7 @@ class BST
         if (left > right)
             return nullptr;
 
+        // pick new root
         int mid = (left + right) / 2;
         Node *node = new Node(arr[mid]);
 
@@ -152,6 +153,7 @@ class BST
         else if (id > node->data.getId())
             node->right = deleteNode(node->right, id);
 
+        // parent of one child
         else
         {
             if (!node->left)
@@ -167,6 +169,8 @@ class BST
                 return temp;
             }
 
+            // parent of more than one child children
+            // re-balance (getMax of left subTree) or (getMin of right subTree)
             Node *temp = findMax(node->left);
             node->data = temp->data;
             node->left = deleteNode(node->left, temp->data.getId());
@@ -175,7 +179,7 @@ class BST
         return node;
     }
 
-    // ========== Inorder Print ==========
+    // ========== In order Print ==========
     void inorderTraversal(Node *node)
     {
         if (!node)
@@ -206,7 +210,7 @@ public:
     {
         Node *node = findNode(root, id);
         if (!node)
-            throw runtime_error("Employee not found!");
+           cout << "Employee not found!" << endl;
         return node->data;
     }
 
@@ -214,7 +218,7 @@ public:
     void deleteNode(int id)
     {
         if (!findNode(root, id))
-            throw runtime_error("Employee not found!");
+            cout << "Employee not found!" << endl;
 
         root = deleteNode(root, id);
         balanceTree();
@@ -237,7 +241,7 @@ public:
     int countNodes() { return countNodes(root); }
 
     // ================== Count Levels ==================
-    int countLevels() { return height(root); }
+    int countLevels() { return getHeight(root); }
 };
 
 // ============================= MAIN FUNCTION =============================
@@ -258,7 +262,7 @@ int main()
 
     cout << "\nFound: " << tree.search(7).getName() << endl;
 
-    cout << "\nDeleting ID 5...\n";
+    cout << "\nDeleting ID 5# \n";
     tree.deleteNode(5);
 
     tree.printTree();
